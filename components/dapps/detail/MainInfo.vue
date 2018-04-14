@@ -35,6 +35,14 @@
           <h3 class="sub-heading">Tags</h3>
           <p class="sub-body"><a class="sub-tag" v-for="(tag, index) in tags" :key="index" @click="findDappsByTag(tag)">#{{ tag }}</a></p>
         </li>
+        <li v-if="item.stats" class="sub-item">
+          <h3 class="sub-heading">Stats</h3>
+          <ul class="sub-body">
+            <li>Impressions {{ item.stats.impressions }}</li>
+            <li>Clicks {{ item.stats.clicks }}</li>
+            <li>CTR {{ (item.stats.ctr * 100).toFixed(1) }}%</li>
+          </ul>
+        </li>
       </ul>
     </div>
   </section>
