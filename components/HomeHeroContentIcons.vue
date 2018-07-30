@@ -53,6 +53,7 @@ export default {
   @include tweakpoint('min-width', 1400px) {
     bottom: 25px;
     margin-top: 20px;
+    overflow: hidden;
   }
 }
 

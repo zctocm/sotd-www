@@ -1,18 +1,24 @@
 <template>
 <div class="component-DappFeaturedList">
   <div class="wrapper">
-    <h2 class="title-2"><SvgIconFeatured/>Featured ÐApps <nuxt-link :to="{ name: 'collections-slug', params: { slug: 'featured' }}" class="cta" @click.native="trackCollectionView('featured')">View all <SvgIconChevron :width="8" :height="8" direction="right" /></nuxt-link></h2>
+    <h2 class="title-2">
+      <nuxt-link :to="{ name: 'collections-slug', params: { slug: 'featured' }}" class="header-cta" @click.native="trackCollectionView('featured')">
+        <SvgIconFeatured/>Featured ÐApps
+      </nuxt-link>
+      <nuxt-link :to="{ name: 'collections-slug', params: { slug: 'featured' }}" class="cta" @click.native="trackCollectionView('featured')">View all
+        <SvgIconChevron :width="8" :height="8" direction="right" />
+      </nuxt-link>
+      <nuxt-link class="cta -promote" :to="{ name: 'promoted-dapps' }" @click.native="trackPromotedDappsView()">Promote your ÐApp here</nuxt-link>
+    </h2>
     <div class="featured-wrapper">
       <div class="featured-list-wrapper">
         <ul class="featured-list">
-          <DappFeaturedListItem v-for="(dapp, index) in dapps" 
+          <DappFeaturedListItem v-for="(dapp, index) in dapps"
             :key="index"
             :dapp="dapp"
             :index="index"
+            :hasPromotedDapp="hasPromotedDapp"
           />
-          <li class="linkexchange">
-            <Linkexchange/>
-          </li>
         </ul>
       </div>
     </div>
@@ -21,42 +27,69 @@
 </template>
 
 <script>
-import { trackCollectionView } from '~/helpers/mixpanel'
+import { trackCollectionView, trackPromotedDappsView } from '~/helpers/mixpanel'
+import { dappPromotedSlots } from '~/helpers/constants'
 import axios from '~/helpers/axios'
 import DappFeaturedListItem from './DappFeaturedListItem'
-import Linkexchange from './Linkexchange'
 import SvgIconChevron from './SvgIconChevron'
 import SvgIconFeatured from './SvgIconFeatured'
 
 export default {
   components: {
     DappFeaturedListItem,
-    Linkexchange,
     SvgIconChevron,
     SvgIconFeatured
+  },
+  computed: {
+    userEntryRoute () {
+      return this.$store.getters['userEntryRoute']
+    }
   },
   data () {
     return {
       scrollIndex: 0,
-      dapps: []
+      dapps: [],
+      hasPromotedDapp: false,
+      sourcePath: this.$route.path
     }
   },
   methods: {
+    getFeaturedDapps () {
+      return axios.get('collections/featured')
+    },
+    getPromotedDapps () {
+      return axios.get('promoted/dapps')
+    },
     trackCollectionView (slug) {
       const sourceComponent = 'DappFeaturedList'
-      const sourcePath = this.$route.path
       const targetCollection = slug
-      const action = trackCollectionView(sourceComponent, sourcePath, targetCollection)
+      const action = trackCollectionView(sourceComponent, this.sourcePath, targetCollection)
+      this.$mixpanel.track(action.name, action.data)
+    },
+    trackPromotedDappsView () {
+      const sourceComponent = 'DappFeaturedList'
+      const action = trackPromotedDappsView(sourceComponent, this.sourcePath, this.userEntryRoute)
       this.$mixpanel.track(action.name, action.data)
     }
   },
   mounted () {
-    axios
-      .get('collections/featured')
-      .then(response => {
-        const collection = response.data
-        const dapps = collection.items
-        this.dapps = dapps.slice(0, 3)
+    Promise.all([this.getFeaturedDapps(), this.getPromotedDapps()])
+      .then(([featured, promoted]) => {
+        const featuredDapps = featured.data.items
+        // slots must be 4 or fewer
+        const slots = dappPromotedSlots
+        const promotedDapps = promoted.data.slice(0, slots).reverse()
+        if (featuredDapps && featuredDapps.length) {
+          this.dapps = featuredDapps.slice(0, 4 - (promotedDapps.length))
+        }
+        if (promotedDapps && promotedDapps.length) {
+          for (var i = 0; i < promotedDapps.length; i++) {
+            let promotedDapp = promotedDapps[i]
+            promotedDapp.isPromoted = true
+            this.dapps.unshift(promotedDapp)
+          }
+          this.hasPromotedDapp = true
+        }
       })
   }
 }
@@ -99,22 +132,8 @@ export default {
   }
 }
 
-.linkexchange {
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba($color--black, .1);
-  width: 100%;
-  height: 250px;
-  margin: 0 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @include tweakpoint('min-width', 750px) {
-    width: calc(50% - 20px); 
-  }
-  @include tweakpoint('min-width', 1200px) {
-    width: calc(25% - 20px); 
-  }
+.header-cta {
+  text-decoration: none;
 }
 
 .cta {
@@ -126,6 +145,17 @@ export default {
   letter-spacing: -.25px;
   margin-left: 12px;
   text-decoration: none;
+  &.-promote {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    text-decoration: underline;
+  }
+}
+
+.title-2 {
+  position: relative;
+  font-size: 2.5rem;
 }
 
 .wrapper {

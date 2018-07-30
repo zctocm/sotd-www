@@ -1,11 +1,11 @@
 <template>
 <li class="component-DappCardListItem" :class="'-' + dapp.status">
-  <nuxt-link class="link" :to="{ name: 'dapps-slug', params: { slug: dapp.slug } }" @click.native="trackDappView(dapp.slug)">
+  <nuxt-link class="link" :to="{ name: 'dapp-detail', params: { slug: dapp.slug } }" @click.native="trackDappView(dapp.slug)">
     <h4 class="title-4">{{ dapp.name }}</h4>
     <p class="description">{{ dapp.teaser }}</p>
     <div class="meta" :class="'-' + dapp.status">
       <span class="status">{{ dapp.status }}</span>
-      <DappBadgeList v-if="dapp.badges.length" :badges="dapp.badges" />
+      <DappBadgeList v-if="dapp.badges && dapp.badges.length" :badges="dapp.badges" />
     </div>
     <span v-if="dapp.isNew" class="new" :class="'-' + dapp.status">
       New
@@ -19,6 +19,11 @@ import { trackDappView } from '~/helpers/mixpanel'
 import DappBadgeList from './DappBadgeList'
 
 export default {
+  data () {
+    return {
+      sourcePath: this.$route.path
+    }
+  },
   components: {
     DappBadgeList
   },
@@ -26,8 +31,7 @@ export default {
     trackDappView (targetDapp) {
       const sourceCollection = this.sourceCollection
       const sourceComponent = 'DappCardListItem'
-      const sourcePath = this.$route.path
-      const action = trackDappView(sourceCollection, sourceComponent, sourcePath, targetDapp)
+      const action = trackDappView(sourceCollection, sourceComponent, this.sourcePath, targetDapp)
       this.$mixpanel.track(action.name, action.data)
     }
   },
@@ -48,7 +52,7 @@ export default {
 
 .component-DappCardListItem {
   position: relative;
-  height: 215px;
+  height: 200px;
   margin: 10px;
   box-shadow: 0 10px 30px rgba($color--black, .1);
   transition: all .4s ease;

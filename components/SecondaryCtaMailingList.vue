@@ -18,7 +18,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { isValidEmail } from '~/helpers/validators'
+import { validateEmail } from '~/helpers/mixins'
 import { setUser, trackNewsletterSubscribe } from '~/helpers/mixpanel'
 import axios from '~/helpers/axios'
 import SvgIconMail from './SvgIconMail'
@@ -38,7 +38,8 @@ export default {
       email: '',
       emailIsValid: false,
       isSubmitting: false,
-      justSubmitted: false
+      justSubmitted: false,
+      sourcePath: this.$route.path
     }
   },
   methods: {
@@ -76,25 +77,16 @@ export default {
     },
     trackNewsletterSubscribe () {
       const sourceComponent = 'SecondaryCtaMailingList'
-      const sourcePath = this.$route.path
-      const action = trackNewsletterSubscribe(this.email, sourceComponent, sourcePath)
+      const action = trackNewsletterSubscribe(this.email, sourceComponent, this.sourcePath)
       this.$mixpanel.track(action.name, action.data)
 
       const hasWeb3 = typeof web3 !== 'undefined'
       const lastUpdated = new Date().toISOString()
       const user = setUser(this.email, hasWeb3, lastUpdated, this.userEntryRoute)
       this.$mixpanel.setUser(user)
-    },
-    validateEmail () {
-      let isValid = false
-      if (this.email.length > 0) {
-        isValid = isValidEmail(this.email)
-      } else {
-        isValid = false
-      }
-      this.emailIsValid = isValid
     }
-  }
+  },
+  mixins: [validateEmail]
 }
 </script>
 

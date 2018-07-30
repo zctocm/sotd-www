@@ -1,4 +1,4 @@
-import axios from '~/helpers/axios'
+import { isValidEmail } from '~/helpers/validators'
 
 export const getCaretPosition = {
   methods: {
@@ -41,31 +41,32 @@ export const dispatchWarnings = {
   }
 }
 
-export const setDappPage = {
-  computed: {
-    dapp () {
-      return this.$store.getters['dapps/detail/item']
+export const setPromotedDappsPage = {
+  data () {
+    return {
+      description: 'Show off your amazing decentralized application to thousands of crypto investors, thought leaders, blockchain innovators, and technologists.'
     }
-  },
-  fetch ({ store, params, error }) {
-    return axios
-      .get('dapps/' + params.slug)
-      .then(response => {
-        const data = response.data
-        const dapp = data.item
-        store.dispatch('dapps/detail/setItem', dapp)
-        store.dispatch('setSiteSection', 'dapps')
-        if (!Object.keys(dapp).length > 0) {
-          error({ statusCode: 404 })
-        }
-      })
   },
   head () {
     return {
-      title: this.dapp.name + ' — State of the ÐApps',
+      title: 'State of the ÐApps — Promote your ÐApp',
       meta: [
-        { hid: 'description', name: 'description', content: this.dapp.teaser }
+        { hid: 'description', name: 'description', content: this.description }
       ]
+    }
+  }
+}
+
+export const validateEmail = {
+  methods: {
+    validateEmail () {
+      let isValid = false
+      if (this.email.length > 0) {
+        isValid = isValidEmail(this.email)
+      } else {
+        isValid = false
+      }
+      this.emailIsValid = isValid
     }
   }
 }

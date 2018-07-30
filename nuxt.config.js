@@ -1,5 +1,6 @@
 const env = {
   apiUrl: process.env.API_URL || 'https://api.stateofthedapps.com/',
+  cdnPublicPath: process.env.CDN_PUBLIC_PATH || '/_nuxt/',
   googleAnalytics: process.env.GOOGLE_ANALYTICS || 'UA-000000-1',
   mapboxKey: process.env.MAPBOX_KEY,
   mixpanel: process.env.MIXPANEL,
@@ -24,6 +25,7 @@ module.exports = {
         })
       }
     },
+    publicPath: env.cdnPublicPath,
     vendor: [
       'axios',
       'mixpanel-browser',
@@ -66,6 +68,7 @@ module.exports = {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' },
       { hid: 'description', name: 'description', content: 'The curated list of decentralized applications' },
+      { hid: 'image', property: 'og:image', content: '/og-default.png' },
       { name: 'theme-color', content: '#222' }
     ],
     link: [
@@ -95,6 +98,7 @@ module.exports = {
     { src: '~/plugins/polyfills', ssr: false },
     { src: '~/plugins/vue-config' },
     { src: '~/plugins/vue-filters' },
+    { src: '~/plugins/vue-localstorage' },
     { src: '~/plugins/mixpanel', ssr: false },
     { src: '~/plugins/webfontloader', ssr: false },
     { src: '~/plugins/clipboard', ssr: false }

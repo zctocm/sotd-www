@@ -2,8 +2,8 @@
 <ul class="component-DappCardList">
   <DappCardListItem v-for="(dapp, index) in dapps"
     :key="index"
-    :dapp="dapp" 
-    :sourceCollection="sourceCollection" />
+    :dapp="dapp"
+    :sourceCollection="sourceCollection"/>
 </ul>
 </template>
 
@@ -46,10 +46,7 @@ export default {
   @include tweakpoint('min-width', 775px) {
     width: calc(33.33% - 20px);
   }
-  @include tweakpoint('min-width', 1200px) {
-    width: calc(25% - 20px);
-  }
-  @include tweakpoint('min-width', 1500px) {
+  @include tweakpoint('min-width', 1250px) {
     width: calc(16.66% - 20px);
   }
 }

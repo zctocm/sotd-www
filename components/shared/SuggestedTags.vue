@@ -56,7 +56,10 @@
         this.$store.dispatch('tags/selectItem', key)
         this.$store.dispatch('tags/resetItems')
         // contextually dispatch actions based on the model
-        if (this.model === 'dapps' || this.model === 'events') {
+        if (this.model === 'dapps') {
+          this.$store.dispatch(this.model + '/search/addTagToQuery', item)
+          this.$store.dispatch(this.model + '/search/fetchItems')
+        } else if (this.model === 'events') {
           this.$store.dispatch(this.model + '/list/addTagToQuery', item)
           this.$store.dispatch(this.model + '/list/fetchItems')
         }
@@ -77,12 +80,12 @@
       padding: 10px;
       box-shadow: 0 17px 70px rgba($color--black,.2);
       width: 250px;
-      top: 133px;
-      left: 10px;
+      top: 65px;
+      left: 50px;
       overflow: hidden;
       z-index: 10;
       @include tweakpoint('min-width', $tweakpoint--default) {
-        top: 153px;
+        top: 115px;
         left: 75px;
         width: 500px;
       }

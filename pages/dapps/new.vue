@@ -1,11 +1,12 @@
 <template>
+<LayoutMain>
   <div>
     <section class="section -intro">
       <div class="container">
         <h1 class="heading">Submit a ÐApp</h1>
         <p class="description">
           Use this form to submit a new Ethereum decentralized app.<br />
-          Looking to update an existing ÐApp? Use the <img src="~/assets/images/icons/suggest.png" width="14" class="image"> <strong>Edit</strong> option on the respective ÐApp details page.
+          Looking to update an existing ÐApp? Use the &nbsp;<img src="~/assets/images/icons/edit.png" width="14" class="image"> <strong>Edit</strong>&nbsp; option on the respective ÐApp details page.
         </p>
       </div>
     </section>
@@ -16,15 +17,18 @@
       </div>
     </section>
   </div>
+</LayoutMain>
 </template>
 
 <script>
   import Fields from '~/components/dapps/form/Fields'
+  import LayoutMain from '~/components/LayoutMain'
   import PreviewSave from '~/components/dapps/form/PreviewSave'
 
   export default {
     components: {
       Fields,
+      LayoutMain,
       PreviewSave
     },
     head () {

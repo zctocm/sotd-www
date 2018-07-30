@@ -41,6 +41,68 @@ export const trackContact = function (sourceComponent, sourcePageLocation, sourc
   return action
 }
 
+export const trackDappContract = function (address, dapp, network) {
+  let name = 'DApp - Contract'
+  let data = {
+    address,
+    dapp,
+    network
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappContractCopy = function (address, dapp, network) {
+  let name = 'DApp - Contract Copy'
+  let data = {
+    address,
+    dapp,
+    network
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappEdit = function (slug) {
+  let name = 'DApp - Suggest a change'
+  let data = {
+    slug
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappEditSubmit = function (changes, email, slug) {
+  let name = 'DApp - Submit a change'
+  let data = {
+    changes,
+    email,
+    slug
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
 export const trackDappFeedback = function (dapp, feedback) {
   let name = 'DApp - Feedback'
   let data = {
@@ -56,6 +118,112 @@ export const trackDappFeedback = function (dapp, feedback) {
   return action
 }
 
+export const trackDappFlag = function (slug) {
+  let name = 'DApp - Flag as inappropriate'
+  let data = {
+    slug
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappRankingCategory = function (sourceComponent, sourcePath, category) {
+  let name = 'DApp Ranking - Category'
+  let data = {
+    sourceComponent,
+    sourcePath,
+    category
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappRankingSort = function (order, sort) {
+  let name = 'DApp Ranking - Sort'
+  let data = {
+    order,
+    sort
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappShare = function (slug) {
+  let name = 'DApp - Share'
+  let data = {
+    slug
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappSite = function (dapp, type, url) {
+  let name = 'DApp - Site'
+  let data = {
+    dapp,
+    type,
+    url
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappSocial = function (dapp, platform, url) {
+  let name = 'DApp - Social'
+  let data = {
+    dapp,
+    platform,
+    url
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappTag = function (name, slug) {
+  let actionName = 'DApp - Site'
+  let data = {
+    name,
+    slug
+  }
+
+  const action = {
+    name: actionName,
+    data
+  }
+
+  return action
+}
+
 export const trackDappView = function (sourceCollection, sourceComponent, sourcePath, targetDapp) {
   let name = 'DApp - View'
   let data = {
@@ -64,6 +232,20 @@ export const trackDappView = function (sourceCollection, sourceComponent, source
   if (sourceCollection) { data = { ...data, sourceCollection } }
   if (sourceComponent) { data = { ...data, sourceComponent } }
   if (sourcePath) { data = { ...data, sourcePath } }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackFooterSubmit = function (sourcePath) {
+  let name = 'Footer - Submit'
+  let data = {
+    sourcePath
+  }
 
   const action = {
     name,
@@ -115,6 +297,34 @@ export const trackHomeHeroDappIcon = function (targetIndex) {
   return action
 }
 
+export const trackListAdd = function (dapp) {
+  let name = 'My List - Add'
+  let data = {
+    dapp
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackListRemove = function (dapp) {
+  let name = 'My List - Remove'
+  let data = {
+    dapp
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
 export const trackMenu = function (sourcePath, targetMenuItem) {
   let name = 'Menu'
   let data = {
@@ -135,6 +345,34 @@ export const trackMetamaskCta = function (sourceComponent, sourcePath) {
   let data = {
     sourceComponent,
     sourcePath
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackMyListView = function (dapps) {
+  let name = 'My List - View'
+  let data = {
+    dapps
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackMyListShare = function (dapps) {
+  let name = 'My List - Share'
+  let data = {
+    dapps
   }
 
   const action = {
@@ -177,12 +415,75 @@ export const trackPageAbout = function (sourceComponent, sourcePageLocation, sou
   return action
 }
 
+export const trackPromotedDappsView = function (sourceComponent, sourcePath, userEntryRoute) {
+  let name = 'Promoted DApps - View'
+  let data = {
+    userEntryRoute
+  }
+
+  if (sourceComponent) { data = { ...data, sourceComponent } }
+  if (sourcePath) { data = { ...data, sourcePath } }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
 export const trackPageTerms = function (sourceComponent, sourcePageLocation, sourcePath) {
   let name = 'Terms page'
   let data = {
     sourceComponent,
     sourcePageLocation,
     sourcePath
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackPromotedDappSubmit = function (dapp, email, hasSubmittedDapp) {
+  let name = 'Promoted DApp - Submit'
+  let data = {
+    dapp,
+    email,
+    hasSubmittedDapp
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackPublicListView = function (listUrl, sourcePath) {
+  let name = 'Public List - View'
+  let data = {
+    listUrl,
+    sourcePath
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackPublicListCreate = function (listUrl, slug) {
+  let name = 'Public List - Create'
+  let data = {
+    listUrl,
+    slug
   }
 
   const action = {

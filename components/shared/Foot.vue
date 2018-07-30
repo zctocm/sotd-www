@@ -8,6 +8,12 @@
       <nuxt-link @click.native="trackPageAbout()" to="/about" class="nav-link">About</nuxt-link>
     </li>
     <li class="nav-item">
+      <nuxt-link @click.native="trackFooterSubmit()" :to="{ name: 'dapps-new' }" class="nav-link">Submit a ÐApp</nuxt-link>
+    </li>
+    <li class="nav-item">
+      <nuxt-link @click.native="trackPromotedDappsView()" :to="{ name: 'promoted-dapps' }" class="nav-link">Promote your ÐApp</nuxt-link>
+    </li>
+    <li class="nav-item">
       <nuxt-link @click.native="trackPageTerms()" to="/terms" class="nav-link">Terms of use</nuxt-link>
     </li>
     <ul class="social-list">
@@ -26,6 +32,9 @@
       <li class="social-item">
         <a @click="trackSocial('Slack')" href="https://slack.stateofthedapps.com/" class="social-link" target="_blank" rel="noopener noreferrer"><img src="~/assets/images/social/slack-reverse.png" alt="Slack" class="social-icon"></a>
       </li>
+      <li class="social-item">
+        <a @click="trackSocial('Telegram')" href="https://t.me/stateofthedapps" class="social-link" target="_blank" rel="noopener noreferrer"><img src="~/assets/images/social/chat-reverse.png" alt="Telegram" class="social-icon"></a>
+      </li>
     </ul>
   </ul>
   <ul class="attribution-list">
@@ -43,14 +52,26 @@
 </template>
 
 <script>
-import { trackContact, trackPageAbout, trackPageTerms, trackSocial } from '~/helpers/mixpanel'
+import {
+  trackContact,
+  trackFooterSubmit,
+  trackPageAbout,
+  trackPromotedDappsView,
+  trackPageTerms,
+  trackSocial
+} from '~/helpers/mixpanel'
 
 export default {
-  data: () => {
+  data () {
     return {
       sourceComponent: '/shared/foot',
       sourcePageLocation: 'footer',
-      sourcePath: ''
+      sourcePath: this.$route.path
+    }
+  },
+  computed: {
+    userEntryRoute () {
+      return this.$store.getters['userEntryRoute']
     }
   },
   methods: {
@@ -58,8 +79,16 @@ export default {
       const action = trackContact(this.sourceComponent, this.sourcePageLocation, this.sourcePath)
       this.$mixpanel.track(action.name, action.data)
     },
+    trackFooterSubmit () {
+      const action = trackFooterSubmit(this.sourcePath)
+      this.$mixpanel.track(action.name, action.data)
+    },
     trackPageAbout () {
       const action = trackPageAbout(this.sourceComponent, this.sourcePageLocation, this.sourcePath)
+      this.$mixpanel.track(action.name, action.data)
+    },
+    trackPromotedDappsView () {
+      const action = trackPromotedDappsView(this.sourceComponent, this.sourcePath, this.userEntryRoute)
       this.$mixpanel.track(action.name, action.data)
     },
     trackPageTerms () {
@@ -70,9 +99,6 @@ export default {
       const action = trackSocial(this.sourceComponent, this.sourcePageLocation, this.sourcePath, platform)
       this.$mixpanel.track(action.name, action.data)
     }
-  },
-  mounted () {
-    this.sourcePath = this.$route.path
   }
 }
 </script>

@@ -22,6 +22,9 @@ const actions = {
   },
   setSiteSection ({ commit }, section) {
     commit('SET_SITE_SECTION', section)
+  },
+  setSiteModal ({ commit }, modal) {
+    commit('SET_SITE_MODAL', modal)
   }
 }
 
@@ -32,8 +35,23 @@ const getters = {
   siteSection: state => {
     return state.site.section
   },
+  siteModal: state => {
+    return state.site.modal
+  },
+  statDappContractCount: state => {
+    return state.stats.dappContractCount
+  },
   statDappCount: state => {
     return state.stats.dappCount
+  },
+  statDappDau: state => {
+    return state.stats.dappDau
+  },
+  statDappTx24Hr: state => {
+    return state.stats.dappTx24Hr
+  },
+  statDappVol24Hr: state => {
+    return state.stats.dappVol24Hr
   },
   statEventCount: state => {
     return state.stats.eventCount
@@ -47,12 +65,19 @@ const mutations = {
   SET_HERO_LOADED (state) {
     state.site.heroHasLoaded = true
   },
+  SET_SITE_MODAL (state, modal) {
+    state.site.modal = modal
+  },
   SET_SITE_SECTION (state, section) {
     state.site.section = section
   },
   SET_STATS (state, data) {
-    state.stats.dappCount = data.dappCount
-    state.stats.eventCount = data.eventCount
+    state.stats.dappContractCount = data.dappContractCount || 0
+    state.stats.dappCount = data.dappCount || 0
+    state.stats.dappDau = data.dappDau || 0
+    state.stats.dappTx24Hr = data.dappTx24Hr || 0
+    state.stats.dappVol24Hr = data.dappVol24Hr || 0
+    state.stats.eventCount = data.eventCount || 0
   },
   SET_USER_ENTRY_ROUTE (state, path) {
     state.user.entryRoute = path
@@ -62,10 +87,19 @@ const mutations = {
 const state = () => ({
   site: {
     heroHasLoaded: false,
-    section: ''
+    section: '',
+    modal: {
+      component: '',
+      mpData: {},
+      props: {}
+    }
   },
   stats: {
+    dappContractCount: 0,
     dappCount: 0,
+    dappDau: 0,
+    dappTx24Hr: 0,
+    dappVol24Hr: 0,
     eventCount: 0
   },
   user: {
