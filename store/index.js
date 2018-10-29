@@ -3,7 +3,7 @@ import axios from '~/helpers/axios'
 import announcementsModule from './modules/announcements'
 import collectionsModule from './modules/collections'
 import dappsModule from './modules/dapps'
-import eventsModule from './modules/events'
+import listModule from './modules/list'
 import newsletterModule from './modules/newsletter'
 import tagsModule from './modules/tags'
 
@@ -20,6 +20,12 @@ const actions = {
   setHeroLoaded ({ commit }) {
     commit('SET_HERO_LOADED')
   },
+  setPageModal ({ commit }, value) {
+    commit('SET_PAGE_MODAL', value)
+  },
+  setSearch ({ commit }, value) {
+    commit('SET_SEARCH', value)
+  },
   setSiteSection ({ commit }, section) {
     commit('SET_SITE_SECTION', section)
   },
@@ -32,11 +38,20 @@ const getters = {
   heroHasLoaded: state => {
     return state.site.heroHasLoaded
   },
+  pageModal: state => {
+    return state.pageModal
+  },
+  search: state => {
+    return state.search
+  },
   siteSection: state => {
     return state.site.section
   },
   siteModal: state => {
     return state.site.modal
+  },
+  statCategories: state => {
+    return state.stats.categories
   },
   statDappContractCount: state => {
     return state.stats.dappContractCount
@@ -53,8 +68,11 @@ const getters = {
   statDappVol24Hr: state => {
     return state.stats.dappVol24Hr
   },
-  statEventCount: state => {
-    return state.stats.eventCount
+  statPlatforms: state => {
+    return state.stats.platforms
+  },
+  statStatuses: state => {
+    return state.stats.statuses
   },
   userEntryRoute: state => {
     return state.user.entryRoute
@@ -65,6 +83,12 @@ const mutations = {
   SET_HERO_LOADED (state) {
     state.site.heroHasLoaded = true
   },
+  SET_PAGE_MODAL (state, value) {
+    state.pageModal = value
+  },
+  SET_SEARCH (state, value) {
+    state.search = value
+  },
   SET_SITE_MODAL (state, modal) {
     state.site.modal = modal
   },
@@ -72,12 +96,7 @@ const mutations = {
     state.site.section = section
   },
   SET_STATS (state, data) {
-    state.stats.dappContractCount = data.dappContractCount || 0
-    state.stats.dappCount = data.dappCount || 0
-    state.stats.dappDau = data.dappDau || 0
-    state.stats.dappTx24Hr = data.dappTx24Hr || 0
-    state.stats.dappVol24Hr = data.dappVol24Hr || 0
-    state.stats.eventCount = data.eventCount || 0
+    state.stats = data
   },
   SET_USER_ENTRY_ROUTE (state, path) {
     state.user.entryRoute = path
@@ -85,6 +104,8 @@ const mutations = {
 }
 
 const state = () => ({
+  pageModal: '',
+  search: '',
   site: {
     heroHasLoaded: false,
     section: '',
@@ -95,12 +116,14 @@ const state = () => ({
     }
   },
   stats: {
+    categories: [],
     dappContractCount: 0,
     dappCount: 0,
     dappDau: 0,
     dappTx24Hr: 0,
     dappVol24Hr: 0,
-    eventCount: 0
+    platforms: [],
+    statuses: []
   },
   user: {
     entryRoute: ''
@@ -115,7 +138,7 @@ const createStore = () => {
       announcements: announcementsModule,
       collections: collectionsModule,
       dapps: dappsModule,
-      events: eventsModule,
+      list: listModule,
       newsletter: newsletterModule,
       tags: tagsModule
     },

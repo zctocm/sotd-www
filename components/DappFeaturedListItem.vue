@@ -4,10 +4,12 @@
     :to="{ name: 'dapp-detail', params: { slug: dapp.slug } }" 
     class="link" 
     @click.native="trackDappView(dapp.slug)">
-    <img class="product-image" :src="dapp.imageKeyVisual"/>
+    <div
+      class="product-image-wrapper"
+      :style="`background-image: url('${dapp.productImage || dapp.imageKeyVisual}')`"/>
     <div class="info">
       <h4 class="title-4">{{ dapp.name }}</h4>   
-      <p class="tagline">{{ (dapp.tagline || dapp.teaser) | truncate(50) }}</p>
+      <p class="tagline">{{ dapp.teaser | truncate(50) }}</p>
       <span v-if="dapp.isPromoted" class="promoted">promoted</span>
     </div>
   </nuxt-link>
@@ -66,7 +68,6 @@ export default {
 .link {
   display: block;
   position: relative;
-  height: 100%;
   width: 100%;
   text-decoration: none;
 }
@@ -80,12 +81,15 @@ export default {
   padding: 10px 12px;
   width: 100%;
   text-align: center;
-
 }
 
-.product-image {
-  max-width: 100%;
-  display: block;
+.product-image-wrapper {
+  height: 0;
+  padding-bottom: 52.5%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: lighten($color--black, 62%);
 }
 
 .promoted {

@@ -4,30 +4,22 @@
     <div v-if="dapp.logoUrl" class="logo-wrapper">
       <img class="logo-image" :src="dapp.logoUrl"/>
     </div>
-    <span class="star-wrapper">
-      <button v-if="!myList.includes(dapp.slug)" class="button -add" @click="addToMyList(dapp.slug)">
-        <span class="add-text"><SvgPlus/> Add to my list</span>
-      </button>
-      <button v-else class="button -add" @click="removeFromMyList(dapp.slug)">
-        <span class="add-text">Remove from my list</span>
-      </button>
-    </span>
-    <span v-if="dapp.sites.websiteUrl === dapp.sites.dappUrl">
-      <a :href="dapp.sites.websiteUrl" class="button" target="_blank" :rel="'noopener noreferrer' + (dapp.nofollow ? ' nofollow' : '')" @click="trackDappSite(['website','dapp'], dapp.sites.websiteUrl)">
+    <div v-if="dapp.sites.websiteUrl && dapp.sites.websiteUrl === dapp.sites.dappUrl">
+      <a :href="dapp.sites.websiteUrl + refString(dapp.sites.websiteUrl)" class="button" target="_blank" :rel="'noopener noreferrer' + (dapp.nofollow ? ' nofollow' : '')" @click="trackDappSite(['website','dapp'], dapp.sites.websiteUrl)">
         <span v-if="dapp.tags.includes(dappGameTag)">Play game<span v-if="dapp.isNsfw"> (NSFW)</span></span>
         <span v-else>Launch ÐApp/website<span v-if="dapp.isNsfw"> (NSFW)</span></span>
       </a>
-    </span>
-    <span v-else>
-      <a v-if="dapp.sites.dappUrl" :href="dapp.sites.dappUrl" class="button" target="_blank" :rel="'noopener noreferrer' + (dapp.nofollow ? ' nofollow' : '')" @click="trackDappSite(['dapp'], dapp.sites.dappUrl)">
+    </div>
+    <div v-else>
+      <a v-if="dapp.sites.dappUrl" :href="dapp.sites.dappUrl + refString(dapp.sites.dappUrl)" class="button" target="_blank" :rel="'noopener noreferrer' + (dapp.nofollow ? ' nofollow' : '')" @click="trackDappSite(['dapp'], dapp.sites.dappUrl)">
         <span v-if="dapp.tags.includes(dappGameTag)">Play game<span v-if="dapp.isNsfw"> (NSFW)</span></span>
         <span v-else>Launch ÐApp<span v-if="dapp.isNsfw"> (NSFW)</span></span>
       </a>
-      <a v-if="dapp.sites.websiteUrl" :href="dapp.sites.websiteUrl" class="button" target="_blank" :rel="'noopener noreferrer' + (dapp.nofollow ? ' nofollow' : '')" @click="trackDappSite(['website'], dapp.sites.websiteUrl)">Visit website<span v-if="dapp.isNsfw"> (NSFW)</span></a>
-    </span>
+      <a v-if="dapp.sites.websiteUrl" :href="dapp.sites.websiteUrl + refString(dapp.sites.websiteUrl)" class="button" target="_blank" :rel="'noopener noreferrer' + (dapp.nofollow ? ' nofollow' : '')" @click="trackDappSite(['website'], dapp.sites.websiteUrl)">Visit website<span v-if="dapp.isNsfw"> (NSFW)</span></a>
+    </div>
     <ul v-if="dapp.socials.length" class="social-list">
       <li v-for="(social, index) in dapp.socials" :key="index" class="social-item">
-        <a class="social-link" :href="social.url" target="_blank" rel="noopener noreferrer" :title="social.platform | capitalize" @click="trackDappSocial(social.platform, social.url)">
+        <a class="social-link" :href="social.url + refString(social.url)" target="_blank" rel="noopener noreferrer" :title="social.platform | capitalize" @click="trackDappSocial(social.platform, social.url)">
           <component :is="svgSocialComponent(social.platform)"></component>
         </a>
       </li>
@@ -37,8 +29,8 @@
 </template>
 
 <script>
-import { dappGameTag, dappSocialComponentMap, myListLimit } from '~/helpers/constants'
-import { trackDappSite, trackDappSocial, trackListAdd, trackListRemove } from '~/helpers/mixpanel'
+import { dappGameTag, dappSocialComponentMap } from '~/helpers/constants'
+import { trackDappSite, trackDappSocial } from '~/helpers/mixpanel'
 import SvgSocialChat from './SvgSocialChat'
 import SvgSocialBlog from './SvgSocialBlog'
 import SvgSocialFacebook from './SvgSocialFacebook'
@@ -52,8 +44,7 @@ import SvgStar from './SvgStar'
 export default {
   data () {
     return {
-      dappGameTag,
-      myList: []
+      dappGameTag
     }
   },
   components: {
@@ -68,26 +59,10 @@ export default {
     SvgStar
   },
   methods: {
-    addToMyList (slug) {
-      if (this.myList.length < myListLimit) {
-        if (!this.myList.includes(slug)) {
-          this.myList.push(slug)
-          this.$localStorage.set('myList', this.myList)
-          const action = trackListAdd(this.dapp.slug)
-          this.$mixpanel.track(action.name, action.data)
-        }
-      } else {
-        alert('You have reached the limit of 50 dapps on your list. Please remove some before you add more.')
-      }
-    },
-    removeFromMyList (slug) {
-      if (this.myList.includes(slug)) {
-        let index = this.myList.indexOf(slug)
-        this.myList.splice(index, 1)
-        this.$localStorage.set('myList', this.myList)
-        const action = trackListRemove(this.dapp.slug)
-        this.$mixpanel.track(action.name, action.data)
-      }
+    refString (url) {
+      let refString = url.includes('?') ? '&' : '?'
+      refString += 'utm_source=StateOfTheDApps'
+      return refString
     },
     svgSocialComponent (platform) {
       const socialComponent = dappSocialComponentMap[platform]
@@ -100,12 +75,6 @@ export default {
     trackDappSocial (platform, url) {
       const action = trackDappSocial(this.dapp.slug, platform, url)
       this.$mixpanel.track(action.name, action.data)
-    }
-  },
-  mounted () {
-    const myList = this.$localStorage.get('myList')
-    if (myList) {
-      this.myList = myList.split(',')
     }
   },
   props: {
@@ -123,6 +92,34 @@ export default {
 .add-icon {
   font-size: 2.1rem;
   line-height: 0;
+}
+
+.add-popover {
+  position: absolute;
+  top: -45px;
+  left: calc(50% - 60px);
+  width: 100%;
+  background: $color--black;
+  border-radius: 4px;
+  box-shadow: 0 4px 50px rgba($color--black, .2);
+  padding: 8px;
+  text-align: center;
+  width: 120px;
+  &:after {
+    content: '';
+    position: absolute;
+    right: calc(50% - 5px);
+    bottom: -5px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid $color--black;
+  }
+}
+
+.add-popover-button {
+  color: $color--white;
 }
 
 .button {
@@ -146,6 +143,10 @@ export default {
   }
 }
 
+.cta-wrapper {
+  position: relative;
+}
+
 .logo-image {
   display: block;
   margin: 0 auto;
@@ -158,7 +159,7 @@ export default {
 .logo-wrapper {
   text-align: center;
   overflow: hidden;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
 }
 
 .social-item {

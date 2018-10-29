@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper">
     <div class="item -preview" :class="'-' + status">
-        <div class="new-banner" @click="$mixpanel.track('New DApp - Preview new flag')"><span class="new-message" :class="'-' + status">New</span></div>
         <div class="info">
             <div class="description-wrapper">
                 <h3 class="title" @click="$mixpanel.track('New DApp - Preview title')"><span v-if="name">{{ name | truncate(25) }}</span><span v-else>Your ÐApp</span></h3>
@@ -13,12 +12,12 @@
     </div>
     <div class="checkboxes">
       <div class="checkbox-field">
-        <input class="checkbox-input" type="checkbox" id="subscribe-newsletter-checkbox" v-model="subscribeNewsletter">
-        <label class="checkbox-label" for="subscribe-newsletter-checkbox">Email me (very occasional) updates</label>
+        <input class="checkbox-input" type="checkbox" id="promotion-interest" v-model="promotionInterest">
+        <label class="checkbox-label" for="promotion-interest">I'm interested in paying to promote this ÐApp to attract more users</label>
       </div>
       <div class="checkbox-field">
-        <input class="checkbox-input" type="checkbox" id="join-slack-checkbox" v-model="joinSlack">
-        <label class="checkbox-label" for="join-slack-checkbox">Invite me to the SotÐ slack community</label>
+        <input class="checkbox-input" type="checkbox" id="subscribe-newsletter-checkbox" v-model="subscribeNewsletter">
+        <label class="checkbox-label" for="subscribe-newsletter-checkbox">Email me (very occasional) updates</label>
       </div>
       <div class="checkbox-field">
         <input class="checkbox-input" type="checkbox" id="accepted-terms-checkbox" v-model="acceptedTerms">
@@ -41,6 +40,27 @@
       authors () {
         return this.$store.getters['dapps/form/authors']
       },
+      contractsMainnet () {
+        return this.$store.getters['dapps/form/contractsMainnet']
+      },
+      contractsKovan () {
+        return this.$store.getters['dapps/form/contractsKovan']
+      },
+      contractsRopsten () {
+        return this.$store.getters['dapps/form/contractsRopsten']
+      },
+      contractsRinkeby () {
+        return this.$store.getters['dapps/form/contractsRinkeby']
+      },
+      contractsPoaMainnet () {
+        return this.$store.getters['dapps/form/contractsPoaMainnet']
+      },
+      contractsPoaTestnet () {
+        return this.$store.getters['dapps/form/contractsPoaTestnet']
+      },
+      contractsEosMainnet () {
+        return this.$store.getters['dapps/form/contractsEosMainnet']
+      },
       errorFields () {
         return this.$store.getters['dapps/form/errorFields']
       },
@@ -50,20 +70,20 @@
       name () {
         return this.$store.getters['dapps/form/name']
       },
+      promotionInterest: {
+        get () {
+          return this.$store.getters['dapps/form/promotionInterest']
+        },
+        set () {
+          this.$store.dispatch('dapps/form/toggleCheckbox', 'promotionInterest')
+        }
+      },
       subscribeNewsletter: {
         get () {
           return this.$store.getters['dapps/form/subscribeNewsletter']
         },
         set () {
           this.$store.dispatch('dapps/form/toggleCheckbox', 'subscribeNewsletter')
-        }
-      },
-      joinSlack: {
-        get () {
-          return this.$store.getters['dapps/form/joinSlack']
-        },
-        set () {
-          this.$store.dispatch('dapps/form/toggleCheckbox', 'joinSlack')
         }
       },
       status () {
@@ -101,6 +121,13 @@
           const data = {
             fields: this.fields
           }
+          data.fields.contractsMainnet = this.contractsMainnet
+          data.fields.contractsKovan = this.contractsKovan
+          data.fields.contractsRopsten = this.contractsRopsten
+          data.fields.contractsRinkeby = this.contractsRinkeby
+          data.fields.contractsPoaMainnet = this.contractsPoaMainnet
+          data.fields.contractsPoaTestnet = this.contractsPoaTestnet
+          data.fields.contractsEosMainnet = this.contractsEosMainnet
           this.sending = true
           axios.post('dapps', data)
             .then((response) => {
@@ -118,16 +145,20 @@
                 name: this.fields.name,
                 email: this.fields.email,
                 author: this.fields.author,
-                joinSlack: this.fields.joinSlack,
+                promotionInterest: this.fields.promotionInterest,
                 subscribeNewsletter: this.fields.subscribeNewsletter
               })
-              this.$store.dispatch('dapps/form/resetForm')
-              const modal = {
-                component: 'ModalDappsNewConfirmation',
-                mpData: {},
-                props: {}
+              if (this.promotionInterest) {
+                this.$router.push({name: 'dapps-new-confirmation'})
+              } else {
+                const modal = {
+                  component: 'ModalDappsNewConfirmation',
+                  mpData: {},
+                  props: {}
+                }
+                this.$store.dispatch('setSiteModal', modal)
               }
-              this.$store.dispatch('setSiteModal', modal)
+              this.$store.dispatch('dapps/form/resetForm')
             })
             .catch((error) => {
               alert(error.response.data.message)

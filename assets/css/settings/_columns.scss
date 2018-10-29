@@ -5,20 +5,21 @@
       width: 90px; 
     }
     &.-dapp {
-      width: 190px;   
+      width: 215px;   
     }
     &.-tagline {
       flex: 1;
     }   
-    &.-tags {
-      width: 200px;    
+    &.-profile {
+      width: 85px; 
+      text-align: right;   
     }
     &.-dau {
-      width: 100px;
+      width: 150px;
       text-align: right;
     }
     &.-mau {
-      width: 100px;
+      width: 150px;
       text-align: right;
     }
     &.-dev_30d {

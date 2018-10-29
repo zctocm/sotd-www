@@ -1,22 +1,47 @@
 <template>
 <div class="component-DappDetailBodyContentModulesContracts">
-  <h4 class="subtitle">Contract address<span v-if="contracts.length > 1">(es)</span></h4>
   <ul class="contract-list">
-    <DappDetailBodyContentModulesContractsItem v-for="(contract, index) in mainnet" 
-      :key="index"
-      :address="contract.address"
-      :network="contract.network"
-      :slug="slug"/>
-    <DappDetailBodyContentModulesContractsItem v-for="(contract, index) in additionalMainnet" 
-      :key="index + mainnet.length"
-      :address="contract"
-      :excludeLabel="true"
+    <DappDetailBodyContentModulesContractsItem
+      v-if="mainnet.length"
+      :addresses="mainnet"
+      platform="Ethereum"
       network="mainnet"
       :slug="slug"/>
-    <DappDetailBodyContentModulesContractsItem v-for="(contract, index) in testnet" 
-      :key="index + mainnet.length + additionalMainnet.length"
-      :address="contract.address"
-      :network="contract.network"
+    <DappDetailBodyContentModulesContractsItem
+      v-if="kovan.length"
+      :addresses="kovan"
+      platform="Ethereum"
+      network="kovan"
+      :slug="slug"/>
+    <DappDetailBodyContentModulesContractsItem
+      v-if="rinkeby.length"
+      :addresses="rinkeby"
+      platform="Ethereum"
+      network="rinkeby"
+      :slug="slug"/>
+    <DappDetailBodyContentModulesContractsItem
+      v-if="ropsten.length"
+      :addresses="ropsten"
+      platform="Ethereum"
+      network="ropsten"
+      :slug="slug"/>
+    <DappDetailBodyContentModulesContractsItem
+      v-if="poaMainnet.length"
+      :addresses="poaMainnet"
+      platform="POA"
+      network="mainnet"
+      :slug="slug"/>
+    <DappDetailBodyContentModulesContractsItem
+      v-if="poaTestnet.length"
+      :addresses="poaTestnet"
+      platform="POA"
+      network="Sokol Testnet"
+      :slug="slug"/>
+    <DappDetailBodyContentModulesContractsItem
+      v-if="eosMainnet.length"
+      :addresses="eosMainnet"
+      platform="EOS"
+      network="mainnet"
       :slug="slug"/>
   </ul>
 </div>
@@ -29,33 +54,33 @@ export default {
   components: {
     DappDetailBodyContentModulesContractsItem
   },
-  computed: {
-    mainnet () {
-      let contracts = this.contracts
-      let mainnet = []
-      for (let i = 0; i < contracts.length; i++) {
-        if (contracts[i].network === 'mainnet') {
-          mainnet.push(contracts[i])
-        }
-      }
-      return mainnet
-    },
-    testnet () {
-      let contracts = this.contracts
-      let testnet = []
-      for (let i = 0; i < contracts.length; i++) {
-        if (contracts[i].network !== 'mainnet') {
-          testnet.push(contracts[i])
-        }
-      }
-      return testnet
-    }
-  },
   props: {
-    contracts: {
+    mainnet: {
+      type: Array,
       required: true
     },
-    additionalMainnet: {
+    kovan: {
+      type: Array,
+      required: true
+    },
+    rinkeby: {
+      type: Array,
+      required: true
+    },
+    ropsten: {
+      type: Array,
+      required: true
+    },
+    poaMainnet: {
+      type: Array,
+      required: true
+    },
+    poaTestnet: {
+      type: Array,
+      required: true
+    },
+    eosMainnet: {
+      type: Array,
       required: true
     },
     slug: {
@@ -67,10 +92,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '~assets/css/settings';
-
-.contract-list {
-  margin-top: 10px;
-}
 
 .subtitle {
   margin: 0;

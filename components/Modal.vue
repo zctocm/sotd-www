@@ -13,15 +13,15 @@
 <script>
 import { mapGetters } from 'vuex'
 import ModalDappsDetailEdit from './ModalDappsDetailEdit'
+import ModalDappsDetailShare from './ModalDappsDetailShare'
 import ModalDappsNewConfirmation from './ModalDappsNewConfirmation'
-import ModalMyListShare from './ModalMyListShare'
 import ModalPromotedDappsNewConfirmation from './ModalPromotedDappsNewConfirmation'
 
 export default {
   components: {
     ModalDappsDetailEdit,
+    ModalDappsDetailShare,
     ModalDappsNewConfirmation,
-    ModalMyListShare,
     ModalPromotedDappsNewConfirmation
   },
   computed: {

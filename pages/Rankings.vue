@@ -1,10 +1,6 @@
 <template>
   <LayoutMain>
     <div class="page-rankings">
-      <div class="hero-wrapper">
-        <h1 class="title-1">ÐApp Rankings</h1>
-        <p class="description">Check out the hottest ÐApps on the market. ÐApps are ranked by DAU (daily active users).</p>
-      </div>
       <DappList/>
     </div>
   </LayoutMain>
@@ -39,10 +35,11 @@ export default {
 
 .hero-wrapper {
   @include margin-wrapper-main;
-  padding: 4rem 0 3rem 0;
+  padding: 3rem 0 2rem;
 }
 
 .page-rankings {
+  padding-top: 25px;
   padding-bottom: 50px;
 }
 

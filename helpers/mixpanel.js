@@ -41,12 +41,13 @@ export const trackContact = function (sourceComponent, sourcePageLocation, sourc
   return action
 }
 
-export const trackDappContract = function (address, dapp, network) {
+export const trackDappContract = function (address, dapp, network, platform) {
   let name = 'DApp - Contract'
   let data = {
     address,
     dapp,
-    network
+    network,
+    platform
   }
 
   const action = {
@@ -57,12 +58,13 @@ export const trackDappContract = function (address, dapp, network) {
   return action
 }
 
-export const trackDappContractCopy = function (address, dapp, network) {
+export const trackDappContractCopy = function (address, dapp, network, platform) {
   let name = 'DApp - Contract Copy'
   let data = {
     address,
     dapp,
-    network
+    network,
+    platform
   }
 
   const action = {
@@ -132,12 +134,43 @@ export const trackDappFlag = function (slug) {
   return action
 }
 
+export const trackDappPlatform = function (platform, slug) {
+  let name = 'DApp - Platform'
+  let data = {
+    platform,
+    dapp: slug
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
 export const trackDappRankingCategory = function (sourceComponent, sourcePath, category) {
   let name = 'DApp Ranking - Category'
   let data = {
     sourceComponent,
     sourcePath,
     category
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappRankingPlatform = function (sourceComponent, sourcePath, platform) {
+  let name = 'DApp Ranking - Platform'
+  let data = {
+    sourceComponent,
+    sourcePath,
+    platform
   }
 
   const action = {
@@ -203,6 +236,49 @@ export const trackDappSocial = function (dapp, platform, url) {
 
   const action = {
     name,
+    data
+  }
+
+  return action
+}
+
+export const trackDappCategory = function (category, slug) {
+  let actionName = 'DApp - Category'
+  let data = {
+    category,
+    slug
+  }
+
+  const action = {
+    name: actionName,
+    data
+  }
+
+  return action
+}
+
+export const trackDappMetaClick = function (dapp) {
+  let actionName = 'DApp - Meta Click'
+  let data = {
+    dapp
+  }
+
+  const action = {
+    name: actionName,
+    data
+  }
+
+  return action
+}
+
+export const trackDappMetaView = function (dapp) {
+  let actionName = 'DApp - Meta View'
+  let data = {
+    dapp
+  }
+
+  const action = {
+    name: actionName,
     data
   }
 
@@ -484,6 +560,21 @@ export const trackPublicListCreate = function (listUrl, slug) {
   let data = {
     listUrl,
     slug
+  }
+
+  const action = {
+    name,
+    data
+  }
+
+  return action
+}
+
+export const trackSearchSuggestion = function (sourcePath, suggestion) {
+  let name = 'Search - Suggestion'
+  let data = {
+    sourcePath,
+    suggestion
   }
 
   const action = {

@@ -1,5 +1,5 @@
 import axios from '~/helpers/axios'
-import { dappCategoryTagsMap, dappListDefaultLimit, dappListDefaultSort, dappListDefaultOrder } from '~/helpers/constants'
+import { dappListDefaultLimit, dappListDefaultSort, dappListDefaultOrder, platformMap } from '~/helpers/constants'
 
 const actions = {
   fetchDapps ({ commit, state }, type) {
@@ -11,7 +11,8 @@ const actions = {
           offset: state.offset,
           order: state.order,
           sort: state.sort,
-          tags: dappCategoryTagsMap[state.category]
+          platform: state.platform,
+          category: state.category
         }
       })
       .then(response => {
@@ -29,6 +30,9 @@ const actions = {
   },
   setCategory ({ commit }, category) {
     commit('SET_CATEGORY', category)
+  },
+  setPlatform ({ commit }, platform) {
+    commit('SET_PLATFORM', platform)
   },
   setSort ({ commit }, sortOptions) {
     commit('SET_SORT', sortOptions)
@@ -53,6 +57,9 @@ const getters = {
   },
   order: state => {
     return state.order
+  },
+  platform: state => {
+    return state.platform
   },
   sort: state => {
     return state.sort
@@ -80,27 +87,29 @@ const mutations = {
     state.isLoading = status
   },
   SET_CATEGORY (state, category) {
-    let categories = []
-    if (category) {
-      categories.push(category)
-    }
     state.offset = 0
-    state.category = categories
+    state.category = category
   },
   SET_SORT (state, sortOptions) {
     state.offset = 0
     state.order = sortOptions.order
     state.sort = sortOptions.sort
+  },
+  SET_PLATFORM (state, platform) {
+    state.offset = 0
+    const formattedPlatform = platformMap[platform]
+    state.platform = formattedPlatform
   }
 }
 
 const state = () => ({
-  category: [],
+  category: '',
   dapps: [],
   isLoading: true,
   limit: dappListDefaultLimit,
   offset: 0,
   order: dappListDefaultOrder,
+  platform: '',
   sort: dappListDefaultSort,
   total: 0
 })

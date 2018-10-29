@@ -1,6 +1,6 @@
 <template>
   <div class="component-DappDetailBodyContentDescription">
-    <div class="description">
+    <div class="description" itemprop="description">
       <p v-for="(paragraph, index) in formattedDescription" :key="index" class="paragraph">{{ paragraph }}</p>
     </div>
   </div>
@@ -28,6 +28,7 @@ export default {
 @import '~assets/css/settings';
 
 .description {
+  word-break: break-word;
   text-align: center;
   padding: 20px 10px 5px 10px;
   font-size: 1.2rem;

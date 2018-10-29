@@ -1,12 +1,13 @@
 import axios from '~/helpers/axios'
+import { dappDefaultPlatform } from '~/helpers/constants'
 
 function initialState () {
   return {
     errorFields: [
       'authors',
+      'category',
       'description',
       'email',
-      'license',
       'name',
       'status',
       'tags',
@@ -21,9 +22,14 @@ function initialState () {
       email: [],
       kovan: [],
       license: [],
+      icon: [],
       logo: [],
       mainnet: [],
       name: [],
+      poaMainnet: [],
+      poaTestnet: [],
+      eosMainnet: [],
+      productImage: [],
       rinkeby: [],
       ropsten: [],
       socialChat: [],
@@ -34,18 +40,25 @@ function initialState () {
     },
     fields: {
       authors: [],
+      category: '',
       description: '',
       contracts: {
         mainnet: { address: '' },
+        poaMainnet: { address: '' },
+        poaTestnet: { address: '' },
+        eosMainnet: { address: '' },
         ropsten: { address: '' },
         kovan: { address: '' },
         rinkeby: { address: '' }
       },
       email: '',
-      joinSlack: false,
+      icon: '',
       license: '',
       logo: '',
       name: '',
+      platform: dappDefaultPlatform,
+      productImage: '',
+      promotionInterest: false,
       socials: {
         facebook: { path: '' },
         twitter: { path: '' },
@@ -67,7 +80,10 @@ function initialState () {
     tagQuery: '',
     tagsResults: [],
     warnings: {
+      icon: [],
+      logo: [],
       name: [],
+      productImage: [],
       teaser: []
     }
   }
@@ -239,8 +255,46 @@ const getters = {
   authorsErrors: state => {
     return state.errors.authors
   },
+  category: state => {
+    return state.fields.category
+  },
   contracts: state => {
     return state.fields.contracts
+  },
+  contractsMainnet: state => {
+    let contractsString = state.fields.contracts.mainnet.address
+    let contracts = contractsString.split('\n')
+    return contracts
+  },
+  contractsKovan: state => {
+    let contractsString = state.fields.contracts.kovan.address
+    let contracts = contractsString.split('\n')
+    return contracts
+  },
+  contractsRopsten: state => {
+    let contractsString = state.fields.contracts.ropsten.address
+    let contracts = contractsString.split('\n')
+    return contracts
+  },
+  contractsRinkeby: state => {
+    let contractsString = state.fields.contracts.rinkeby.address
+    let contracts = contractsString.split('\n')
+    return contracts
+  },
+  contractsPoaMainnet: state => {
+    let contractsString = state.fields.contracts.poaMainnet.address
+    let contracts = contractsString.split('\n')
+    return contracts
+  },
+  contractsPoaTestnet: state => {
+    let contractsString = state.fields.contracts.poaTestnet.address
+    let contracts = contractsString.split('\n')
+    return contracts
+  },
+  contractsEosMainnet: state => {
+    let contractsString = state.fields.contracts.eosMainnet.address
+    let contracts = contractsString.split('\n')
+    return contracts
   },
   dappUrl: state => {
     return state.fields.siteUrls.dapp
@@ -266,8 +320,14 @@ const getters = {
   fields: state => {
     return state.fields
   },
-  joinSlack: state => {
-    return state.fields.joinSlack
+  icon: state => {
+    return state.fields.icon
+  },
+  iconErrors: state => {
+    return state.errors.icon
+  },
+  iconWarnings: state => {
+    return state.warnings.icon
   },
   kovanErrors: state => {
     return state.errors.kovan
@@ -284,6 +344,9 @@ const getters = {
   logoErrors: state => {
     return state.errors.logo
   },
+  logoWarnings: state => {
+    return state.warnings.logo
+  },
   mainnetErrors: state => {
     return state.errors.mainnet
   },
@@ -295,6 +358,27 @@ const getters = {
   },
   nameWarnings: state => {
     return state.warnings.name
+  },
+  platform: state => {
+    return state.fields.platform
+  },
+  poaMainnetErrors: state => {
+    return state.errors.poaMainnet
+  },
+  poaTestnetErrors: state => {
+    return state.errors.poaTestnet
+  },
+  eosMainnetErrors: state => {
+    return state.errors.eosMainnet
+  },
+  productImage: state => {
+    return state.fields.productImage
+  },
+  productImageErrors: state => {
+    return state.errors.productImage
+  },
+  productImageWarnings: state => {
+    return state.warnings.productImage
   },
   rinkebyErrors: state => {
     return state.errors.rinkeby
@@ -349,6 +433,9 @@ const getters = {
   },
   acceptedTerms: state => {
     return state.fields.acceptedTerms
+  },
+  promotionInterest: state => {
+    return state.fields.promotionInterest
   },
   websiteUrl: state => {
     return state.fields.siteUrls.website

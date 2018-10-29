@@ -7,41 +7,59 @@
     <nuxt-link class="logo-link -wordmark" :to="{ name: 'home' }" @click.native="trackMenu('logo')">
       <SvgLogotype :fill="color" :width="120" :height="26" />
     </nuxt-link>
-    <span class="tagline">The curated list of {{ statDappCount.toLocaleString() }} decentralized apps</span>
   </div>
   <ul class="nav-list" role="navigation">
     <li class="nav-item -home">
       <nuxt-link class="nav-link" :class="'-' + color" :to="{ name: 'home' }" @click.native="trackMenu('home')" exact>Home</nuxt-link>
     </li>
     <li class="nav-item">
+      <nuxt-link class="nav-link" :class="'-' + color" :to="{ name: 'dapps' }" @click.native="trackMenu('dapp-list')">All ÐApps</nuxt-link>
+    </li>
+    <li class="nav-item">
       <nuxt-link class="nav-link" :class="'-' + color" :to="{ name: 'rankings' }" @click.native="trackMenu('rankings')">Rankings</nuxt-link>
     </li>
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <nuxt-link class="nav-link" :class="'-' + color" :to="{ name: 'collections' }" @click.native="trackMenu('collections')">Collections</nuxt-link>
-    </li>
+    </li> -->
     <li class="nav-item -stats">
-      <nuxt-link class="nav-link" :class="'-' + color" :to="{ name: 'stats' }" @click.native="trackMenu('stats')" exact>Statistics</nuxt-link>
+      <nuxt-link class="nav-link" :class="'-' + color" :to="{ name: 'stats' }" @click.native="trackMenu('stats')" exact>Stats</nuxt-link>
     </li>
-    <li class="nav-item -my-list">
-      <nuxt-link class="nav-link" :class="'-' + color" :to="{ name: 'my-list' }" @click.native="trackMenu('my-list')" exact>My List</nuxt-link>
-    </li>
-    <li class="nav-item">
-      <nuxt-link class="nav-link -search" :class="'-' + color" :to="{ name: 'dapps' }" @click.native="trackMenu('dapps')"><SvgIconMagnifier :theme="color"/></nuxt-link>
-    </li>
-    <li class="nav-item -submit">
-      <nuxt-link @click.native="trackMenu('dapps-new')" :to="{ name: 'dapps-new' }" class="nav-link -submit" :class="$route.name === 'home' ? 'is-home' : ''">Submit a ÐApp</nuxt-link>
-    </li>
-    <li class="nav-item -newsletter" :class="'-' + color" @click="scrollToMailingList('subscribe')">
+    <template v-if="this.$route.name != 'dapps' && this.$route.name != 'dapps-tab' && this.$route.name != 'dapps-tags' && this.$route.name != 'dapps-tab-tags'">
+      <media :query="{maxWidth: 975}">
+        <li class="nav-item">
+          <nuxt-link class="nav-link -search" :class="'-' + color" :to="{ name: 'dapps' }" @click.native="trackMenu('dapps')"><SvgIconMagnifier :theme="color"/></nuxt-link>
+        </li>
+      </media>
+    </template>
+    <!-- <li class="nav-item -newsletter" :class="'-' + color" @click="scrollToMailingList('subscribe')">
       <SvgIconMail class="nav-icon -newsletter" :fill="color" :width="18" :height="18" /> 
       <span class="nav-link -newsletter" :class="'-' + color" >Stay in the loop</span>
+    </li> -->
+  </ul>
+  <template v-if="this.$route.name != 'dapps' && this.$route.name != 'dapps-tab' && this.$route.name != 'dapps-tags' && this.$route.name != 'dapps-tab-tags'">
+    <media :query="{minWidth: 975}">
+      <ul class="nav-list-search" :class="search.length ? 'is-searching' : ''">
+        <li class="nav-item -search">
+          <GlobalSearch
+            :color="color"
+            />
+        </li>
+      </ul>
+    </media>
+  </template>
+  <ul class="nav-list-submit">
+    <li class="nav-item -submit">
+      <nuxt-link @click.native="trackMenu('dapps-new')" :to="{ name: 'dapps-new' }" class="nav-link -submit" :class="$route.name === 'home' ? 'is-home' : ''">Submit a ÐApp</nuxt-link>
     </li>
   </ul>
 </div>
 </template>
 
 <script>
+import Media from 'vue-media'
 import { mapGetters } from 'vuex'
 import { trackMenu } from '~/helpers/mixpanel'
+import GlobalSearch from './GlobalSearch'
 import SvgIconLogo from './SvgIconLogo'
 import SvgIconMail from './SvgIconMail'
 import SvgIconMagnifier from './SvgIconMagnifier'
@@ -50,20 +68,25 @@ import SvgLogotype from './SvgLogotype'
 export default {
   data () {
     return {
+      list: [],
       sourcePath: this.$route.path
     }
   },
   components: {
+    GlobalSearch,
+    Media,
     SvgIconLogo,
     SvgIconMail,
     SvgIconMagnifier,
     SvgLogotype
   },
   computed: {
-    ...mapGetters([
-      'siteSection',
-      'statDappCount'
-    ])
+    ...mapGetters({
+      search: 'search',
+      siteSection: 'siteSection',
+      statDappCount: 'statDappCount',
+      myList: 'list/items'
+    })
   },
   methods: {
     scrollToMailingList (targetMenuItem) {
@@ -90,11 +113,29 @@ export default {
 .component-Menu {
   display: flex;
   align-items: center;
-  padding: 18px 22px 16px 22px;
-  margin: -10px -22px 0px;
+  padding: 18px 10px 16px 10px;
+  margin: -10px -10px 0px;
+  @include tweakpoint('min-width', 640px) {
+    padding-left: 22px;
+    padding-right: 22px;
+    margin-left: -22px;
+    margin-right: -22px;
+  }
   &.-white {
     background: rgba($color--black, .2)
   }
+}
+
+.list-count {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  background: rgba($color--black, .2);
+  display: inline-block;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 8px;
+  font-size: .7rem;
 }
 
 .logo-link {
@@ -117,7 +158,6 @@ export default {
 .nameplate {
   display: flex;
   align-items: center;
-  flex-grow: 1;
 }
 
 .nav-icon {
@@ -137,11 +177,16 @@ export default {
       display: flex;
     }
   }
-  &.-home {
+  &.-submit {
+    margin-left: auto;
+  }
+  &.-search {
+    cursor: text;
     display: none;
+    margin-right: 20px;
     @include tweakpoint('min-width', 600px) {
-      display: block;
-    }
+      display: flex;
+    }   
   }
 }
 
@@ -152,6 +197,7 @@ export default {
   border: 1px solid transparent;
   border-left: 0;
   border-right: 0;
+  position: relative;
   &.nuxt-link-active, &.nuxt-link-exact-active {
     &.-white {
       border-bottom: 1px solid $color--white;
@@ -174,7 +220,7 @@ export default {
     border: 1px solid $color--black;
     padding: 5px;
     @include tweakpoint('min-width', 840px) {
-      padding: 5px 10px;
+      padding: 7px 10px;
     }
     &.is-home {
       border-color: rgba($color--white, .7);
@@ -185,6 +231,16 @@ export default {
 .nav-list {
   display: flex;
   align-items: center;
+}
+
+.nav-list-search {
+  &.is-searching {
+    flex-grow: 1;
+  }
+}
+
+.nav-list-submit {
+  margin-left: auto;
 }
 
 .tagline {

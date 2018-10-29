@@ -1,30 +1,51 @@
 <template>
-  <div class="list">
-    <Name/>
-    <Email/>
-    <Teaser/>
-    <Description/>
-    <Website/>
-    <DappUrl/>
-    <Authors/>
-    <License/>
-    <Logo/>
-    <Contracts/>
-    <Status/>
-    <Social/>
-    <Tags/>
+  <div
+    :class="isEdit ? 'is-edit' : ''"
+    class="list">
+    <Name v-if="!isEdit || missingFields.includes('name')"/>
+    <Email v-if="!isEdit"/>
+    <Teaser v-if="!isEdit || missingFields.includes('teaser')"/>
+    <Description v-if="!isEdit || missingFields.includes('description')"/>
+    <Website v-if="!isEdit || missingFields.includes('url')"/>
+    <DappUrl v-if="!isEdit || missingFields.includes('dapp_url')"/>
+    <Authors v-if="!isEdit || missingFields.includes('contact')"/>
+    <License v-if="!isEdit || missingFields.includes('license')"/>
+    <Logo v-if="!isEdit || missingFields.includes('logo_cache')"/>
+    <Icon v-if="!isEdit || missingFields.includes('icon_cache')"/>
+    <ProductImage v-if="!isEdit || missingFields.includes('product_image_cache')"/>
+    <Platform v-if="!isEdit"/>
+    <Contracts v-if="!isEdit || (missingFields.includes('contract_addresses_mainnet') || missingFields.includes('poa_mainnet') || missingFields.includes('eos_mainnet'))"
+      :is-edit="isEdit"
+      :eth-is-missing="missingFields.includes('contract_addresses_mainnet')"
+      :poa-is-missing="missingFields.includes('poa_mainnet')"
+      :eos-is-missing="missingFields.includes('eos_mainnet')"/>
+    <Status v-if="!isEdit || missingFields.includes('status')"/>
+    <Social v-if="!isEdit || missingFields.includes('github') || missingFields.includes('twitter') || missingFields.includes('reddit') || missingFields.includes('blog') || missingFields.includes('facebook') || missingFields.includes('chat')"
+      :is-edit="isEdit"
+      :github-is-missing="missingFields.includes('github')"
+      :twitter-is-missing="missingFields.includes('twitter')"
+      :reddit-is-missing="missingFields.includes('reddit')"
+      :blog-is-missing="missingFields.includes('blog')"
+      :facebook-is-missing="missingFields.includes('facebook')"
+      :chat-is-missing="missingFields.includes('chat')"/>
+    <Category v-if="!isEdit || missingFields.includes('category')"/>
+    <Tags v-if="!isEdit || missingFields.includes('tags')"/>
   </div>
 </template>
 
 <script>
   import Authors from '~/components/dapps/form/fields/Authors.vue'
+  import Category from '~/components/dapps/form/fields/Category.vue'
   import Contracts from '~/components/dapps/form/fields/Contracts.vue'
   import DappUrl from '~/components/dapps/form/fields/DappUrl.vue'
   import Description from '~/components/dapps/form/fields/Description.vue'
   import Email from '~/components/dapps/form/fields/Email.vue'
+  import Icon from '~/components/dapps/form/fields/Icon.vue'
   import License from '~/components/dapps/form/fields/License.vue'
   import Logo from '~/components/dapps/form/fields/Logo.vue'
   import Name from '~/components/dapps/form/fields/Name.vue'
+  import Platform from '~/components/dapps/form/fields/Platform.vue'
+  import ProductImage from '~/components/dapps/form/fields/ProductImage.vue'
   import Social from '~/components/dapps/form/fields/Social.vue'
   import Status from '~/components/dapps/form/fields/Status.vue'
   import Tags from '~/components/dapps/form/fields/Tags.vue'
@@ -34,18 +55,43 @@
   export default {
     components: {
       Authors,
+      Category,
       Contracts,
       DappUrl,
       Description,
       Email,
+      Icon,
       License,
       Logo,
       Name,
+      Platform,
+      ProductImage,
       Social,
       Status,
       Tags,
       Teaser,
       Website
+    },
+    computed: {
+      missingFields () {
+        const fields = []
+        let i = 0
+        while (i < this.suggestions.length) {
+          fields.push(this.suggestions[i].attribute)
+          i++
+        }
+        return fields
+      }
+    },
+    props: {
+      isEdit: {
+        default: false,
+        type: Boolean
+      },
+      suggestions: {
+        type: Array,
+        default: function () { return [] }
+      }
     }
   }
 </script>
@@ -61,6 +107,9 @@
     @include tweakpoint('min-width', $tweakpoint--default) {
       margin-right: 20px;
       margin-left: 0;
+      &.is-edit {
+        margin: 0 auto;
+      }
     }
 
     .item {
@@ -139,6 +188,7 @@
       display: block;
       right: 20px;
       top: 30px;
+      font-size: 12px;
     }
 
     /deep/ .help {

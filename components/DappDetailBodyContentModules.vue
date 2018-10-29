@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="module-wrapper -tier-4" v-if="stats">
-        <div class="module -dev">
+        <div class="module -dev" v-if="dapp.stats.mau">
           <DappDetailBodyContentModulesStats 
             :daily="dapp.stats.dau"
             :monthly="dapp.stats.mau"
@@ -39,7 +39,7 @@
             title="Active users"
             :weekly="dapp.stats.wau"/>
         </div>
-        <div class="module">
+        <div class="module" v-if="dapp.stats.tx_30d">
           <DappDetailBodyContentModulesStats 
             :daily="dapp.stats.tx_1d"
             :monthly="dapp.stats.tx_30d"
@@ -49,22 +49,48 @@
             type="numbers"
             :weekly="dapp.stats.tx_7d"/>
         </div>
-        <div class="module">
-          <DappDetailBodyContentModulesStats 
+        <div class="module" v-if="dapp.stats.value_30d || dapp.stats.poa_value_30d || dapp.stats.eos_value_30d">
+          <DappDetailBodyContentModulesStats
+            v-if="dapp.stats.value_30d" 
             :daily="dapp.stats.value_1d"
             :monthly="dapp.stats.value_30d"
             :sparkline="dapp.sparklines.value"
             :quarterly="dapp.stats.value_90d"
-            title="Value (ETH)"
+            title="Volume (ETH)"
             type="numbers"
             :weekly="dapp.stats.value_7d"/>
+          <br v-if="dapp.stats.value_30d && dapp.stats.poa_value_30d">
+          <DappDetailBodyContentModulesStats
+            v-if="dapp.stats.poa_value_30d" 
+            :daily="dapp.stats.poa_value_1d"
+            :monthly="dapp.stats.poa_value_30d"
+            :sparkline="dapp.sparklines.poa_value"
+            :quarterly="dapp.stats.poa_value_90d"
+            title="Volume (POA)"
+            type="numbers"
+            :weekly="dapp.stats.poa_value_7d"/>
+          <DappDetailBodyContentModulesStats
+            v-if="dapp.stats.eos_value_30d"
+            :daily="dapp.stats.eos_value_1d"
+            :monthly="dapp.stats.eos_value_30d"
+            :sparkline="dapp.sparklines.eos_value"
+            :quarterly="dapp.stats.eos_value_90d"
+            title="Volume (EOS)"
+            type="numbers"
+            :weekly="dapp.stats.eos_value_7d"/>
         </div>
       </div>
-      <div class="module-wrapper -tier-5" v-if="dapp.contracts.length">
+      <div class="module-wrapper -tier-5"
+        v-if="dapp.contractsMainnet.length || dapp.contractsKovan.length || dapp.contractsRinkeby.length || dapp.contractsRopsten.length || dapp.contractsPoaMainnet.length || dapp.contractsPoaTestnet.length || dapp.contractsEosMainnet.length">
         <div class="module">
           <DappDetailBodyContentModulesContracts
-            :additionalMainnet="dapp.contractsAdditionalMainnet"
-            :contracts="dapp.contracts"
+            :mainnet="dapp.contractsMainnet"
+            :kovan="dapp.contractsKovan"
+            :rinkeby="dapp.contractsRinkeby"
+            :ropsten="dapp.contractsRopsten"
+            :poa-mainnet="dapp.contractsPoaMainnet"
+            :poa-testnet="dapp.contractsPoaTestnet"
+            :eos-mainnet="dapp.contractsEosMainnet"
             :slug="dapp.slug"/>
         </div>
       </div>

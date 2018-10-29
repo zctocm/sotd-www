@@ -1,19 +1,3 @@
-const dappCategoryTagsMap = Object.freeze({
-  'community': ['social', 'chat', 'message', 'messaging', 'community', 'communication', 'charity', 'donate', 'gift', 'giving', 'marriage', 'relationship', 'sexuality', 'sex'],
-  'energy': ['energy', 'solar', 'green', 'environment'],
-  'exchanges': ['exchange', 'exchanges', 'market', 'markets', 'marketplace', 'trading', 'trade'],
-  'finance': ['crowdfund', 'crowdfunding', 'crowdsourcing', 'derivative', 'finance', 'finances', 'fundraising', 'money', 'wealth', 'loan', 'borrow'],
-  'gambling': ['casino', 'gamble', 'gambling', 'lottery', 'dice'],
-  'games': ['boardgame', 'game', 'games', 'collectible', 'collectibles', 'video-games'],
-  'governance': ['legal', 'dao', 'organization', 'management', 'governance', 'vote', 'voting', 'poll', 'election'],
-  'health': ['health', 'medical', 'healthcare', 'fitness'],
-  'identity': ['identity', 'kyc', 'identification', 'profiles'],
-  'insurance': ['insurance', 'claims'],
-  'media': ['music', 'music-platform', 'video', 'photography', 'media', 'art', 'publishing'],
-  'property': ['ownership', 'property', 'real-estate', 'rent', 'rental', 'provenance', 'supply', 'supply-chain'],
-  'storage': ['storage', 'sharing', 'cloud', 'data', 'file', 'backup']
-})
-
 const dappGameTag = 'game'
 
 const dappListDefaultLimit = 50
@@ -24,10 +8,31 @@ const dappListDefaultOrder = 'asc'
 
 const dappPromotedSlots = 3
 
+const dappMetaBadges = [
+  'rank',
+  'users_1d',
+  'users_7d',
+  'users_30d',
+  'tx_1d',
+  'tx_7d',
+  'tx_30d',
+  'value_1d',
+  'value_7d',
+  'value_30d',
+  'status',
+  'feedback'
+]
+
 const dappSchema = Object.freeze({
   authors: [],
   badges: [],
-  contracts: [],
+  contractsMainnet: [],
+  contractsKovan: [],
+  contractsRinkeby: [],
+  contractsRopsten: [],
+  contractsPoaMainnet: [],
+  contractsPoaTestnet: [],
+  contractsEosMainnet: [],
   created: '',
   description: '',
   isNew: false,
@@ -37,6 +42,7 @@ const dappSchema = Object.freeze({
   logoUrl: '',
   name: '',
   nofollow: false,
+  platform: '',
   productImage: '',
   relatedDapps: [],
   sites: {
@@ -153,6 +159,8 @@ const daysOfTheWeek = Object.freeze([
   'Sat'
 ])
 
+const dappDefaultPlatform = 'Ethereum'
+
 const eventCategories = Object.freeze([
   'conference',
   'crowdsale',
@@ -175,13 +183,21 @@ const feedbackComponentMap = Object.freeze({
 
 const myListLimit = 50
 
+const platformList = ['Ethereum', 'EOS', 'POA']
+
+const platformMap = {
+  'ethereum': 'Ethereum',
+  'eos': 'EOS',
+  'poa': 'POA'
+}
+
 export {
-  dappCategoryTagsMap,
   dappBadgeMap,
   dappGameTag,
   dappListDefaultLimit,
   dappListDefaultSort,
   dappListDefaultOrder,
+  dappMetaBadges,
   dappPromotedSlots,
   dappRefineStatusOptions,
   dappRefineTabOptions,
@@ -189,8 +205,11 @@ export {
   dappSocialComponentMap,
   dappStatuses,
   daysOfTheWeek,
+  dappDefaultPlatform,
   eventCategories,
   eventRefineCategoryOptions,
   feedbackComponentMap,
-  myListLimit
+  myListLimit,
+  platformList,
+  platformMap
 }

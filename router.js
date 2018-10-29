@@ -3,29 +3,24 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const About = () => import('~/pages/about.vue').then(m => m.default || m)
+const About = () => import('~/pages/About.vue').then(m => m.default || m)
 const Collections = () => import('~/pages/collections/index.vue').then(m => m.default || m)
 const CollectionsSlug = () => import('~/pages/collections/_slug.vue').then(m => m.default || m)
 const DappDetail = () => import('~/pages/DappDetail.vue').then(m => m.default || m)
 const DappDetailDirect = () => import('~/pages/DappDetailDirect.vue').then(m => m.default || m)
+const DappDetailMeta = () => import('~/pages/DappDetailMeta.vue').then(m => m.default || m)
 const Dapps = () => import('~/pages/dapps/index.vue').then(m => m.default || m)
 const DappsNew = () => import('~/pages/dapps/new.vue').then(m => m.default || m)
 const DappsNewConfirmation = () => import('~/pages/dapps/new/confirmation.vue').then(m => m.default || m)
-const Events = () => import('~/pages/events/index.vue').then(m => m.default || m)
-const EventsNew = () => import('~/pages/events/new.vue').then(m => m.default || m)
-const EventsNewConfirmation = () => import('~/pages/events/new/confirmation.vue').then(m => m.default || m)
-const EventsSlug = () => import('~/pages/events/_slug.vue').then(m => m.default || m)
-const EventsSlugPopup = () => import('~/pages/events/_slug/popup.vue').then(m => m.default || m)
-const Home = () => import('~/pages/home.vue').then(m => m.default || m)
-const MyList = () => import('~/pages/MyList.vue').then(m => m.default || m)
+const Home = () => import('~/pages/Home.vue').then(m => m.default || m)
 const Placeholder = () => import('~/components/shared/Placeholder.vue').then(m => m.default || m)
-const PromotedDapps = () => import('~/pages/promoted_dapps.vue').then(m => m.default || m)
-const PromotedDappsDirect = () => import('~/pages/promoted_dapps_direct.vue').then(m => m.default || m)
+const PromotedDapps = () => import('~/pages/PromotedDapps.vue').then(m => m.default || m)
+const PromotedDappsDirect = () => import('~/pages/PromotedDappsDirect.vue').then(m => m.default || m)
 const PublicList = () => import('~/pages/PublicList.vue').then(m => m.default || m)
 const Rankings = () => import('~/pages/Rankings.vue').then(m => m.default || m)
 const Stats = () => import('~/pages/Stats.vue').then(m => m.default || m)
-const Terms = () => import('~/pages/terms.vue').then(m => m.default || m)
-const What = () => import('~/pages/what.vue').then(m => m.default || m)
+const Terms = () => import('~/pages/Terms.vue').then(m => m.default || m)
+const What = () => import('~/pages/What.vue').then(m => m.default || m)
 
 if (process.client) {
   window.history.scrollRestoration = 'manual'
@@ -113,49 +108,9 @@ export function createRouter () {
         name: 'dapp-detail'
       },
       {
-        path: '/events/submit/new',
-        component: EventsNew,
-        name: 'events-new'
-      },
-      {
-        path: '/events/submit/new/confirmation',
-        component: EventsNewConfirmation,
-        name: 'events-new-confirmation'
-      },
-      {
-        path: '/events/:slug',
-        component: EventsSlug,
-        name: 'events-slug'
-      },
-      // the root /events route goes after other /events/{params} routes, so that a direct GET to any other /events/{params} will render before /events child routes
-      {
-        path: '/events',
-        component: Events,
-        name: 'events',
-        children: [
-          {
-            path: 'tagged/:tags',
-            component: Placeholder,
-            name: 'events-tagged-tags',
-            children: [
-              {
-                path: 'category/:category',
-                component: Placeholder,
-                name: 'events-tagged-tags-category-category'
-              }
-            ]
-          },
-          {
-            path: 'category/:category',
-            component: Placeholder,
-            name: 'events-category-category'
-          },
-          {
-            path: ':slug',
-            component: EventsSlugPopup,
-            name: 'events-slug-popup'
-          }
-        ]
+        path: '/dapps/:slug/meta',
+        component: DappDetailMeta,
+        name: 'dapp-detail-meta'
       },
       {
         path: '/dapps/submit/new',
@@ -190,6 +145,16 @@ export function createRouter () {
             path: 'category/:category',
             component: Rankings,
             name: 'rankings-category'
+          },
+          {
+            path: 'platform/:platform',
+            component: Rankings,
+            name: 'rankings-platform'
+          },
+          {
+            path: 'platform/:platform/category/:category',
+            component: Rankings,
+            name: 'rankings-platform-category'
           }
         ]
       },
@@ -202,11 +167,6 @@ export function createRouter () {
         path: '/promoted-dapps',
         component: PromotedDapps,
         name: 'promoted-dapps'
-      },
-      {
-        path: '/my-list',
-        component: MyList,
-        name: 'my-list'
       },
       {
         path: '/tab/:tab',

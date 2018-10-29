@@ -1,63 +1,66 @@
 <template>
   <li class="contract-item">
-    <span class="contract-name"><strong v-if="!excludeLabel">{{ network | capitalize }}</strong></span>
-    <span class="contract-address">
-      <a @click="trackContract(address, network)" :href="'https://' + (network === 'mainnet' ? '' : network + '.') + 'etherscan.io/address/' + address" class="contract-address-value" target="_blank" rel="noopener noreferrer">
-        <media :query="{maxWidth: 500}">
-          <span>{{ address | truncate(20) }}</span>
-        </media>
-        <media :query="{minWidth: 500}">
-          <span>{{ address }}</span>
-        </media>
-      </a>
-      <span class="contract-address-copy" v-clipboard:copy="address" v-clipboard:success="copy" @click="trackContractCopy(address, network)">{{ copyText }}</span>
-    </span>
+    <h4 class="contract-name">{{ network | capitalize }} contract<span v-if="addresses.length > 1">s</span> ({{ platform }})</h4>
+    <ul class="contract-addresses">
+      <DappDetailBodyContentModulesContractsAddress
+        v-for="(address, index) in visibleAddresses"
+        :key="index"
+        :slug="slug"
+        :platform="platform"
+        :network="network"
+        :address="address"/>
+      <DappDetailBodyContentModulesContractsAddress
+        v-for="(address, index) in hiddenAddresses"
+        :key="index + 10"
+        :slug="slug"
+        :platform="platform"
+        :network="network"
+        :address="address"/>
+      <li v-if="addresses.length > 10"><span class="show-hide" @click="toggleHidden">{{ hiddenIsVisible ? 'Hide ' + this.addresses.slice(visibleLimit).length + ' contracts'  : 'Show ' + this.addresses.slice(visibleLimit).length + ' more contracts'}}</span></li>     
+    </ul>
   </li>
 </template>
 
 <script>
-import { trackDappContract, trackDappContractCopy } from '~/helpers/mixpanel'
-import Media from 'vue-media'
+import DappDetailBodyContentModulesContractsAddress from './DappDetailBodyContentModulesContractsAddress'
 
 export default {
   components: {
-    Media
+    DappDetailBodyContentModulesContractsAddress
   },
-  data: () => {
+  data () {
     return {
-      copyText: 'Copy'
+      hiddenIsVisible: false,
+      visibleLimit: 10
     }
   },
-  methods: {
-    copy () {
-      this.copyText = 'Copied!'
-      setTimeout(() => {
-        this.copyText = 'Copy'
-      }, 1500)
+  computed: {
+    visibleAddresses () {
+      const addresses = this.addresses.slice(0, this.visibleLimit)
+      return addresses
     },
-    trackContract (address, network) {
-      const dapp = this.slug
-      const action = trackDappContract(address, dapp, network)
-      this.$mixpanel.track(action.name, action.data)
-    },
-    trackContractCopy (address, network) {
-      const dapp = this.slug
-      const action = trackDappContractCopy(address, dapp, network)
-      this.$mixpanel.track(action.name, action.data)
+    hiddenAddresses () {
+      const addresses = this.hiddenIsVisible ? this.addresses.slice(this.visibleLimit) : []
+      return addresses
     }
   },
   props: {
-    address: {
+    addresses: {
       required: true
-    },
-    excludeLabel: {
-      required: false
     },
     network: {
       required: true
     },
+    platform: {
+      required: true
+    },
     slug: {
       required: true
+    }
+  },
+  methods: {
+    toggleHidden () {
+      this.hiddenIsVisible = !this.hiddenIsVisible
     }
   }
 }
@@ -66,37 +69,24 @@ export default {
 <style lang="scss" scoped>
 @import '~assets/css/settings';
 
-.contract-item {
-  display: flex;
-  align-items: center;
-  padding: 2px 0;
-}
-
 .contract-name {
-  min-width: 70px;
+  margin: 0;
 }
 
-.contract-address {
+.contract-addresses {
+  margin: 5px 0 15px 0;
   flex: 1;
 }
 
-.contract-address-value {
-  font-family: 'Inconsolata', monospace;
-}
-
-.contract-address-copy {
-  margin-left: 8px;
-  font-size: .7rem;
-  color: $color--white;
-  background: $color--black;
-  padding: 2px 5px;
+.show-hide {
+  display: inline-block;
+  background: rgba($color--black, 0.15);
+  border-radius: 4px;
+  padding: 5px 7px 4px 7px;
+  font-weight: 700;
+  margin-top: 5px;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  font-weight: 600;
-  position: relative;
-  top: -1px;
   cursor: pointer;
-  &:active {
-    top: 0;
-  }
 }
 </style>

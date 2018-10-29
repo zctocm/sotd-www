@@ -63,7 +63,7 @@ module.exports = {
     mixpanel: env.mixpanel
   },
   head: {
-    title: 'State of the ÐApps — Projects Built on Ethereum',
+    title: 'State of the ÐApps — Projects Built on Ethereum, EOS & POA',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' },
@@ -98,7 +98,6 @@ module.exports = {
     { src: '~/plugins/polyfills', ssr: false },
     { src: '~/plugins/vue-config' },
     { src: '~/plugins/vue-filters' },
-    { src: '~/plugins/vue-localstorage' },
     { src: '~/plugins/mixpanel', ssr: false },
     { src: '~/plugins/webfontloader', ssr: false },
     { src: '~/plugins/clipboard', ssr: false }
